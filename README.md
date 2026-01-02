@@ -1,16 +1,33 @@
-# React + Vite
+# 🏠 Marbnb – Nekilnojamojo Turto Nuomos Sistema
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Moderni **Full-Stack** žiniatinklio aplikacija, skirta būsto nuomai, sukurta kaip bakalauro baigiamasis darbas. Sistema realizuoja pilną vartotojų autentifikavimo ciklą, nekilnojamojo turto skelbimų valdymą ir rezervacijų sistemą.
 
-Currently, two official plugins are available:
+## 🚀 Technologinis stekas (Tech Stack)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+* **Frontend:** React.js (Vite), Tailwind CSS, Lucide-React (piktogramos).
+* **Backend:** Node.js, Express.js.
+* **Duomenų bazė:** SQLite (fizinis failas `database.db`).
+* **Saugumas:** Bcrypt (slaptažodžių šifravimas naudojant *Salted Hashing*).
 
-## React Compiler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠️ Instaliacija ir paruošimas
+
+Norėdami paleisti projektą savo kompiuteryje, atlikite šiuos žingsnius:
+
+### 1. Priklausomybių įdiegimas
+Atidarykite terminalą pagrindiniame projekto aplanke (`airbnb-clone`):
+
+```bash
+# Įdiegti pagrindinius projekto įrankius (pvz., concurrently)
+npm install
+
+# Įdiegti serverio (Backend) priklausomybes
+cd server
+npm install
+
+# Įdiegti kliento (Frontend) priklausomybes
+cd ../client
+npm install
