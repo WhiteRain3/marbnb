@@ -135,7 +135,14 @@ app.get("/api/listings/:id", (req, res) => {
     res.json(row)
   })
 })
-
+app.delete("/api/listings/:id", (req, res) => {
+  const id = req.params.id
+  // Svarbu: šalinant skelbimą, reikėtų pagalvoti apie susijusias rezervacijas (ar jas palikti, ar šalinti)
+  db.run("DELETE FROM listings WHERE id = ?", [id], (err) => {
+    if (err) return res.status(500).json({ error: err.message })
+    res.json({ success: true })
+  })
+})
 // 5. Sukurti naują skelbimą (Host funkcija)
 app.post("/api/listings", (req, res) => {
   const { title, price, location, category, image } = req.body

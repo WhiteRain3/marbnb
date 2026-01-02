@@ -1,4 +1,4 @@
-import { Calendar, LayoutDashboard, LogOut, PlusCircle, User } from 'lucide-react';
+import { Calendar, LayoutDashboard, LogOut, PlusCircle, ShieldCheck, User } from 'lucide-react'; // Pridėta ShieldCheck
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthService } from '../services/auth';
@@ -30,6 +30,13 @@ const Navbar = () => {
         <div className="flex items-center gap-4">
           {user ? (
             <>
+              {/* Admin nuoroda */}
+              {role === 'admin' && (
+                <Link to="/admin" className="text-sm font-bold text-emerald-600 hover:bg-emerald-50 px-4 py-2 rounded-xl flex items-center gap-2 transition">
+                  <LayoutDashboard size={18} /> Valdymas
+                </Link>
+              )}
+
               {role === 'host' && (
                 <Link to="/host" className="text-sm font-bold text-slate-600 hover:bg-slate-50 px-4 py-2 rounded-xl flex items-center gap-2 transition">
                   <PlusCircle size={18} /> Nuomoti
@@ -47,21 +54,22 @@ const Navbar = () => {
                 onMouseLeave={() => setIsOpen(false)}
               >
                 <div className="flex items-center gap-3 border border-slate-200 rounded-full py-1.5 px-3 hover:shadow-md transition cursor-pointer bg-white">
-                  <div className="bg-slate-100 text-slate-600 p-1 rounded-full">
-                    <User size={20} />
+                  <div className={`p-1 rounded-full ${role === 'admin' ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-600'}`}>
+                    {role === 'admin' ? <ShieldCheck size={20} /> : <User size={20} />}
                   </div>
                   <span className="text-sm font-bold text-slate-700">Mano paskyra</span>
                 </div>
 
-                {/* Dropdown Menu - pridėtas viršutinis invisible tiltas hoveriui */}
                 {isOpen && (
                   <div className="absolute right-0 top-full pt-2 w-64 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="bg-white border border-slate-100 rounded-2xl shadow-2xl overflow-hidden">
                       <div className="px-5 py-4 bg-slate-50 border-b border-slate-100">
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Prisijungta kaip</p>
                         <p className="text-sm font-bold text-slate-800 truncate">{user.email}</p>
-                        <span className="inline-block mt-1 px-2 py-0.5 bg-rose-100 text-rose-600 text-[10px] font-black rounded-md uppercase">
-                          {role === 'host' ? 'Šeimininkas' : 'Keliautojas'}
+                        <span className={`inline-block mt-1 px-2 py-0.5 text-[10px] font-black rounded-md uppercase ${
+                          role === 'admin' ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'
+                        }`}>
+                          {role === 'admin' ? 'Administratorius' : role === 'host' ? 'Šeimininkas' : 'Keliautojas'}
                         </span>
                       </div>
                       

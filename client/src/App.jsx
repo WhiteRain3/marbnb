@@ -1,5 +1,6 @@
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import AdminDashboard from './pages/AdminDashboard';
 import Home from './pages/Home';
 import HostDashboard from './pages/HostDashboard';
 import ListingDetails from './pages/ListingDetails';
@@ -24,6 +25,7 @@ function App() {
             <Route path="/listing/:id" element={<ListingDetails />} />
             <Route path="/dashboard" element={user ? <UserDashboard /> : <Navigate to="/login" />} />
             <Route path="/host" element={role === 'host' ? <HostDashboard /> : <Navigate to="/" />} />
+            <Route path="/admin" element={role === 'admin' ? <AdminDashboard /> : <Navigate to="/" />} />          
           </Routes>
         </main>
       </div>

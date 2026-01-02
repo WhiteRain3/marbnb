@@ -1,79 +1,101 @@
-import { AlertCircle, BarChart3, Home, Trash2, Users } from 'lucide-react';
+import { Calendar, Home, ShieldCheck, Trash2, Users } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 const AdminDashboard = () => {
-  const [listings, setListings] = useState([]);
-  const [stats, setStats] = useState({ bookingsCount: 0, usersCount: 0 });
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState({ listings: [], bookings: [] });
+
+  const fetchData = async () => {
+    const [lRes, bRes] = await Promise.all([
+      fetch('http://localhost:5000/api/listings'),
+      fetch('http://localhost:5000/api/bookings?role=admin')
+    ]);
+    setData({ listings: await lRes.json(), bookings: await bRes.json() });
+  };
 
   useEffect(() => {
-    // Vietoj DatabaseService.query naudojame fetch į mūsų API
-    const fetchAdminData = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/listings');
-        const data = await response.json();
-        setListings(data);
-        
-        // Čia galite pridėti papildomus API kvietimus vartotojų skaičiui ir t.t.
-        setStats(prev => ({ ...prev, usersCount: 3 })); // Pavyzdys, kol neturime stats API
-      } catch (error) {
-        console.error("Klaida gaunant duomenis:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAdminData();
+    fetchData();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Ar tikrai norite pašalinti šį skelbimą?")) {
-      try {
-        // Galite sukurti DELETE endpointą serveryje
-        await fetch(`http://localhost:5000/api/listings/${id}`, { method: 'DELETE' });
-        setListings(listings.filter(l => l.id !== id));
-      } catch (error) {
-        alert("Nepavyko ištrinti");
-      }
+  // Funkcija skelbimų (hosted stuff) šalinimui
+  const deleteListing = async (id) => {
+    if (window.confirm('DĖMESIO: Pašalinus skelbimą bus ištrinta visa jo informacija. Tęsti?')) {
+      await fetch(`http://localhost:5000/api/listings/${id}`, { method: 'DELETE' });
+      setData(prev => ({ ...prev, listings: prev.listings.filter(l => l.id !== id) }));
     }
   };
 
-  if (loading) return <div className="p-10 text-center font-bold">Kraunami duomenys...</div>;
+  // Funkcija rezervacijų šalinimui
+  const deleteBooking = async (id) => {
+    if (window.confirm('Ar tikrai norite atšaukti šią rezervaciją?')) {
+      await fetch(`http://localhost:5000/api/bookings/${id}`, { method: 'DELETE' });
+      setData(prev => ({ ...prev, bookings: prev.bookings.filter(b => b.id !== id) }));
+    }
+  };
 
   return (
-    <div className="space-y-8">
-      <h1 className="text-3xl font-black text-slate-900">Sistemos valdymas</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-3xl border shadow-sm flex items-center gap-4">
-          <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl"><Users /></div>
-          <div><p className="text-sm text-slate-500">Vartotojai</p><p className="text-2xl font-bold">{stats.usersCount}</p></div>
+    <div className="max-w-6xl mx-auto space-y-8 p-4">
+      <div className="bg-slate-900 text-white p-8 rounded-[2rem] flex items-center gap-6 shadow-xl">
+        <div className="p-4 bg-emerald-500/20 rounded-2xl text-emerald-400">
+          <ShieldCheck size={40} />
         </div>
-        <div className="bg-white p-6 rounded-3xl border shadow-sm flex items-center gap-4">
-          <div className="p-3 bg-rose-50 text-rose-600 rounded-2xl"><Home /></div>
-          <div><p className="text-sm text-slate-500">Skelbimai</p><p className="text-2xl font-bold">{listings.length}</p></div>
+        <div>
+          <h1 className="text-3xl font-black italic tracking-tight">Valdymo centras
+          </h1>
+          <p className="text-slate-400 uppercase text-xs font-bold tracking-widest mt-1">Sistemos turinio valdymas</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl border overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-slate-50 text-slate-400 text-xs uppercase">
-            <tr>
-              <th className="px-6 py-4">Pavadinimas</th>
-              <th className="px-6 py-4 text-right">Veiksmai</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y">
-            {listings.map(l => (
-              <tr key={l.id} className="hover:bg-slate-50">
-                <td className="px-6 py-4 font-bold">{l.title}</td>
-                <td className="px-6 py-4 text-right">
-                  <button onClick={() => handleDelete(l.id)} className="text-rose-500 p-2"><Trash2 size={18}/></button>
-                </td>
-              </tr>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* VISI SKELBIMAI (Hosted Stuff) */}
+        <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
+          <h2 className="flex items-center gap-2 text-xl font-bold mb-6 text-slate-800">
+            <Home className="text-rose-500" /> Visi Skelbimai ({data.listings.length})
+          </h2>
+          <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 text-sm">
+            {data.listings.map(l => (
+              <div key={l.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 group">
+                <div className="flex items-center gap-4">
+                    <img src={l.image} alt="" className="w-10 h-10 rounded-lg object-cover" />
+                    <div>
+                        <p className="font-bold text-slate-900">{l.title}</p>
+                        <p className="text-xs text-slate-500">{l.location} • <span className="text-rose-500">{l.price}€</span></p>
+                    </div>
+                </div>
+                <button 
+                  onClick={() => deleteListing(l.id)} 
+                  className="p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
+                  title="Pašalinti skelbimą"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
             ))}
-          </tbody>
-        </table>
+          </div>
+        </div>
+
+        {/* VISOS REZERVACIJOS */}
+        <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
+          <h2 className="flex items-center gap-2 text-xl font-bold mb-6 text-slate-800">
+            <Calendar className="text-rose-500" /> Rezervacijos ({data.bookings.length})
+          </h2>
+          <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 text-sm">
+            {data.bookings.map(b => (
+              <div key={b.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <div>
+                    <p className="font-bold text-slate-900">{b.title}</p>
+                    <p className="text-xs text-slate-500 italic">Vartotojas: {b.user_email}</p>
+                </div>
+                <button 
+                  onClick={() => deleteBooking(b.id)} 
+                  className="p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
+                  title="Atšaukti rezervaciją"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
