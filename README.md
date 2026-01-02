@@ -118,3 +118,7 @@ airbnb-clone/
 * **Slaptažodžiai:** Naudojama bcrypt biblioteka „hašavimui“. Duomenų bazėje saugomi tik negrįžtami kontroliniai kodai.
 * **SQL Ryšiai:** Užklausos vykdomos naudojant JOIN operacijas, dinamiškai apjungiant rezervacijų ir būstų informaciją.
 * **Vartotojo sesija:** Autentifikuota vartotojo informacija saugoma sessionStorage naršyklėje, užtikrinant privatumą.
+
+
+<img width="757" height="132" alt="image" src="https://github.com/user-attachments/assets/a8634ad9-8c07-494d-99b9-636234c02f64" />
+<img width="1070" height="154" alt="image" src="https://github.com/user-attachments/assets/44a47c91-ed07-4c46-b4a4-5d2843b78c7f" />
