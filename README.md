@@ -48,7 +48,7 @@ npm install
 # Įdiegti kliento (Frontend) bibliotekas
 cd ../client
 npm install
-
+```
 
 ### 2. Duomenų bazės inicializavimas
 Serveris automatiškai sukurs `database.db` failą pirmo paleidimo metu. Jame bus sugeneruotos reikiamos lentelės ir pradiniai testavimo duomenys.
@@ -60,6 +60,7 @@ Grįžkite į pagrindinį projekto aplanką ir paleiskite abi dalis (Frontend ir
 
 ```bash
 npm start
+```
 
 * **Vartotojo sąsaja:** `http://localhost:5173`
 
