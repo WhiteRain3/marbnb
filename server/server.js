@@ -42,6 +42,13 @@ db.serialize(() => {
     status TEXT DEFAULT 'Patvirtinta'
   )`)
 
+  const hash = (pw) => bcrypt.hashSync(pw, saltRounds)
+
+  // Naudojame INSERT OR IGNORE, kad kaskart neperrašytų tų pačių vartotojų
+  db.run("INSERT OR IGNORE INTO users (email, password, role) VALUES (?, ?, ?)", ["admin@vu.lt", hash("123"), "admin"])
+  db.run("INSERT OR IGNORE INTO users (email, password, role) VALUES (?, ?, ?)", ["host@vu.lt", hash("123"), "host"])
+  db.run("INSERT OR IGNORE INTO users (email, password, role) VALUES (?, ?, ?)", ["guest@vu.lt", hash("123"), "guest"])
+
   // Pradiniai duomenys su priskirta patirtimi (experience_type)
   db.get("SELECT COUNT(*) as count FROM listings", (err, row) => {
     if (row && row.count === 0) {
@@ -162,9 +169,16 @@ app.get("/api/listings", (req, res) => {
   let sql = "SELECT * FROM listings WHERE 1=1"
   let params = []
 
+  // PATAISYTA: Tiksli kainų segmentavimo logika
   if (maxPrice && maxPrice !== "null") {
-    sql += " AND price <= ?"
-    params.push(Number(maxPrice))
+    const price = Number(maxPrice)
+    if (price === 9999) {
+      sql += " AND price > 150" // Premium segmentas
+    } else if (price === 150) {
+      sql += " AND price > 80 AND price <= 150" // Vidutinis segmentas
+    } else {
+      sql += " AND price <= 80" // Ekonominis segmentas
+    }
   }
 
   if (experience && experience !== "Visi") {
