@@ -9,7 +9,7 @@ const UserDashboard = () => {
 
   useEffect(() => {
     if (user) {
-      fetch(`http://localhost:5000/api/bookings?email=${user.email}&role=${user.role}`)
+      fetch(`/api/bookings?email=${user.email}&role=${user.role}`)
         .then(res => res.json())
         .then(data => setBookings(data))
         .catch(err => console.error("Klaida kraunant rezervacijas:", err));
@@ -18,7 +18,7 @@ const UserDashboard = () => {
 
   const cancelBooking = async (id) => {
     if (window.confirm("Ar tikrai norite atšaukti šią rezervaciją?")) {
-      await fetch(`http://localhost:5000/api/bookings/${id}`, { method: 'DELETE' });
+      await fetch(`/api/bookings/${id}`, { method: 'DELETE' });
       setBookings(bookings.filter(b => b.id !== id));
     }
   };

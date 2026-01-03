@@ -6,8 +6,8 @@ const AdminDashboard = () => {
 
   const fetchData = async () => {
     const [lRes, bRes] = await Promise.all([
-      fetch('http://localhost:5000/api/listings'),
-      fetch('http://localhost:5000/api/bookings?role=admin')
+      fetch('/api/listings'),
+      fetch('/api/bookings?role=admin')
     ]);
     setData({ listings: await lRes.json(), bookings: await bRes.json() });
   };
@@ -19,7 +19,7 @@ const AdminDashboard = () => {
   // Funkcija skelbimų (hosted stuff) šalinimui
   const deleteListing = async (id) => {
     if (window.confirm('DĖMESIO: Pašalinus skelbimą bus ištrinta visa jo informacija. Tęsti?')) {
-      await fetch(`http://localhost:5000/api/listings/${id}`, { method: 'DELETE' });
+      await fetch(`/api/listings/${id}`, { method: 'DELETE' });
       setData(prev => ({ ...prev, listings: prev.listings.filter(l => l.id !== id) }));
     }
   };
@@ -27,7 +27,7 @@ const AdminDashboard = () => {
   // Funkcija rezervacijų šalinimui
   const deleteBooking = async (id) => {
     if (window.confirm('Ar tikrai norite atšaukti šią rezervaciją?')) {
-      await fetch(`http://localhost:5000/api/bookings/${id}`, { method: 'DELETE' });
+      await fetch(`/api/bookings/${id}`, { method: 'DELETE' });
       setData(prev => ({ ...prev, bookings: prev.bookings.filter(b => b.id !== id) }));
     }
   };

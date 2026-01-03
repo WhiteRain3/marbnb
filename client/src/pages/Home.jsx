@@ -8,7 +8,7 @@ const Home = () => {
   const [cat, setCat] = useState('Visi');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/listings').then(r => r.json()).then(data => {
+    fetch('/api/listings').then(r => r.json()).then(data => {
       setListings(data);
       setFiltered(data);
     });

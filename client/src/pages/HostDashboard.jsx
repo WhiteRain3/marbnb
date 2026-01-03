@@ -16,7 +16,7 @@ const HostDashboard = () => {
 
   // Gauname tik šio šeimininko skelbimus
   const fetchMyListings = async () => {
-    const res = await fetch('http://localhost:5000/api/listings');
+    const res = await fetch('/api/listings');
     const data = await res.json();
     setMyListings(data.filter(l => l.host_email === user.email));
   };
@@ -34,7 +34,7 @@ const HostDashboard = () => {
       price: Number(newListing.price)
     };
 
-    const res = await fetch('http://localhost:5000/api/listings', {
+    const res = await fetch('/api/listings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(listingToSave)

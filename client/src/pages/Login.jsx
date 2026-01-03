@@ -16,7 +16,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // Kviečiame AuthService, kuris siunčia užklausą į http://localhost:5000/api/login
+      // Kviečiame AuthService, kuris siunčia užklausą į /api/login
       const user = await AuthService.login(email, password);
 
       if (user) {

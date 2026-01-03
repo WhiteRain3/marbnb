@@ -10,7 +10,7 @@ const ListingDetails = () => {
   const user = AuthService.getUser();
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/listings/${id}`)
+    fetch(`/api/listings/${id}`)
       .then(res => res.json())
       .then(data => {
         if (data.error) navigate('/'); // Jei nerasta, grąžinam į pradžią
@@ -22,7 +22,7 @@ const ListingDetails = () => {
   const handleBooking = async () => {
     if (!user) return navigate('/login');
     
-    const res = await fetch('http://localhost:5000/api/bookings', {
+    const res = await fetch('/api/bookings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
