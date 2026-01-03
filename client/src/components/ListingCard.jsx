@@ -26,6 +26,9 @@ const ListingCard = ({ listing }) => {
       <div className="p-6 space-y-4">
         <div className="flex justify-between items-start">
           <div className="space-y-1">
+            <p className="text-[10px] font-black uppercase text-rose-500 tracking-[0.1em] mb-1">
+              ✨ {listing.experience_type}
+            </p>
             <h3 className="text-xl font-black text-slate-900 tracking-tight leading-none group-hover:text-rose-500 transition-colors">
               {listing.title}
             </h3>
