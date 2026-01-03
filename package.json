@@ -1,10 +1,9 @@
 {
-    "scripts": {
-        "start": "concurrently \"npm run server\" \"npm run client\"",
-        "server": "cd server && node server.js",
-        "client": "cd client && npm run dev"
-    },
-    "devDependencies": {
-        "concurrently": "^9.2.1"
-    }
+  "name": "airbnb-clone-root",
+  "version": "1.0.0",
+  "scripts": {
+    "install-all": "npm install && npm install --prefix client && npm install --prefix server",
+    "build": "npm run build --prefix client",
+    "start": "node server/server.js"
+  }
 }
