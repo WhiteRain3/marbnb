@@ -64,7 +64,7 @@ db.serialize(() => {
           "Anykščiai, Lietuva",
           "Gamta",
           "Poilsiui",
-          "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800",
+          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.familyhandyman.com%2Fwp-content%2Fuploads%2F2019%2F05%2FFH12MAR_52_651_001-treehouse-building-tips.jpg&f=1&nofb=1&ipt=787ad20f946e19af035a68befe5fa258ed58e09d462a7c5b0dccc284578cd176",
           "host@vu.lt",
         ],
         [
@@ -252,6 +252,20 @@ app.delete("/api/bookings/:id", (req, res) => {
   db.run("DELETE FROM bookings WHERE id = ?", [req.params.id], () => res.json({ success: true }))
 })
 
+/** KONFIGŪRACIJA RENDER TALPINIMUI **/
+
+// Jei NODE_ENV yra production, pateikiame sukompiliuotą React projektą
+if (process.env.NODE_ENV === "production") {
+  // Pateikiame statinius failus
+  app.use(express.static(path.join(__dirname, "../client/dist")))
+
+  // PATAISYTA: Naudojame :any* parametrą
+  app.get("/*splat", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "../client", "dist", "index.html"))
+  })
+}
+
+// Paleidimas naudojant Render priskirtą PORT arba 5000 lokaliai
 const PORT = process.env.PORT || 5000
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Serveris paleistas: prievadas ${PORT}`)
