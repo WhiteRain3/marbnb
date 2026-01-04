@@ -54,12 +54,46 @@ db.serialize(() => {
   db.get("SELECT COUNT(*) as count FROM listings", (err, row) => {
     if (row && row.count === 0) {
       const initialListings = [
-        ["Prabangus loftas senamiestyje", "Aukštos lubos ir modernus interjeras miesto širdyje.", 120, "Vilnius, Lietuva", "Miestas", "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800", "host@vu.lt"],
-        ["Namelis medyje", "Pabėkite nuo triukšmo į ramybės oazę gamtoje.", 85, "Anykščiai, Lietuva", "Gamta", "https://images.unsplash.com/photo-1449156001433-31f4964639e1?w=800", "host@vu.lt"],
-        ["Moderni vila prie jūros", "Erdvi vila su vaizdu į kopas ir saulėlydžius.", 210, "Nida, Lietuva", "Pajūris", "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800", "host@vu.lt"],
-        ["Stilingas butas Kaune", "Jaukus butas šalia Laisvės alėjos.", 65, "Kaunas, Lietuva", "Miestas", "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800", "host@vu.lt"],
+        [
+          "Prabangus loftas senamiestyje",
+          "Aukštos lubos ir modernus interjeras miesto širdyje.",
+          120,
+          "Vilnius, Lietuva",
+          "Miestas",
+          "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800",
+          "host@vu.lt",
+        ],
+        [
+          "Namelis medyje",
+          "Pabėkite nuo triukšmo į ramybės oazę gamtoje.",
+          85,
+          "Anykščiai, Lietuva",
+          "Gamta",
+          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.thesprucecrafts.com%2Fthmb%2FilwYm_5YAb-Mq83tb_TJ_NMRCBA%3D%2F2121x1414%2Ffilters%3Ano_upscale()%3Amax_bytes(150000)%3Astrip_icc()%2FGettyImages-980431586-4febe9d7191241e2953abf9f0d10eb01.jpg&f=1&nofb=1&ipt=2075c4e1e5447938fe43ca22df837e4edae6893512e7b735bdfe143c89d9463e",
+          "host@vu.lt",
+        ],
+        [
+          "Moderni vila prie jūros",
+          "Erdvi vila su vaizdu į kopas ir saulėlydžius.",
+          210,
+          "Nida, Lietuva",
+          "Pajūris",
+          "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800",
+          "host@vu.lt",
+        ],
+        [
+          "Stilingas butas Kaune",
+          "Jaukus butas šalia Laisvės alėjos.",
+          65,
+          "Kaunas, Lietuva",
+          "Miestas",
+          "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800",
+          "host@vu.lt",
+        ],
       ]
-      const stmt = db.prepare("INSERT INTO listings (title, description, price, location, category, image, host_email) VALUES (?, ?, ?, ?, ?, ?, ?)")
+      const stmt = db.prepare(
+        "INSERT INTO listings (title, description, price, location, category, image, host_email) VALUES (?, ?, ?, ?, ?, ?, ?)"
+      )
       initialListings.forEach((l) => stmt.run(l))
       stmt.finalize()
     }
@@ -100,11 +134,14 @@ app.get("/api/listings/:id", (req, res) => {
 
 app.post("/api/listings", (req, res) => {
   const { title, description, price, location, category, image, host_email } = req.body
-  db.run("INSERT INTO listings (title, description, price, location, category, image, host_email) VALUES (?, ?, ?, ?, ?, ?, ?)", 
-  [title, description, price, location, category, image, host_email], function (err) {
-    if (err) return res.status(500).json({ error: err.message })
-    res.status(201).json({ id: this.lastID, success: true })
-  })
+  db.run(
+    "INSERT INTO listings (title, description, price, location, category, image, host_email) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    [title, description, price, location, category, image, host_email],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message })
+      res.status(201).json({ id: this.lastID, success: true })
+    }
+  )
 })
 
 app.delete("/api/listings/:id", (req, res) => {
@@ -117,14 +154,17 @@ app.delete("/api/listings/:id", (req, res) => {
 
 app.post("/api/bookings", (req, res) => {
   const { listing_id, user_email, date } = req.body
-  db.run("INSERT INTO bookings (listing_id, user_email, date) VALUES (?, ?, ?)", [listing_id, user_email, date], () => res.status(201).json({ success: true }))
+  db.run("INSERT INTO bookings (listing_id, user_email, date) VALUES (?, ?, ?)", [listing_id, user_email, date], () =>
+    res.status(201).json({ success: true })
+  )
 })
 
 app.get("/api/bookings", (req, res) => {
   const { email, role } = req.query
   let sql = ""
   let params = []
-  if (role === "admin") sql = `SELECT b.*, l.title, l.price, l.location FROM bookings b JOIN listings l ON b.listing_id = l.id`
+  if (role === "admin")
+    sql = `SELECT b.*, l.title, l.price, l.location FROM bookings b JOIN listings l ON b.listing_id = l.id`
   else if (role === "host") {
     sql = `SELECT b.*, l.title, l.price, l.location FROM bookings b JOIN listings l ON b.listing_id = l.id WHERE l.host_email = ?`
     params = [email]
@@ -144,12 +184,12 @@ app.delete("/api/bookings/:id", (req, res) => {
 // Jei NODE_ENV yra production, pateikiame sukompiliuotą React projektą
 if (process.env.NODE_ENV === "production") {
   // Pateikiame statinius failus
-  app.use(express.static(path.join(__dirname, "../client/dist")));
+  app.use(express.static(path.join(__dirname, "../client/dist")))
 
   // PATAISYTA: Naudojame :any* parametrą
-  app.get('/*splat', (req, res) => {
-    res.sendFile(path.resolve(__dirname, "../client", "dist", "index.html"));
-  });
+  app.get("/*splat", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "../client", "dist", "index.html"))
+  })
 }
 
 // Paleidimas naudojant Render priskirtą PORT arba 5000 lokaliai
